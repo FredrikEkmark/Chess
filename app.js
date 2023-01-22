@@ -84,7 +84,7 @@ function choseSquare(clicked_id) {
 function declareMove(from, to) {
 
     console.log("Move from " + from + " to " + to);
-    console.log(validateMove(from, to));
+    console.log("Valid Move: " + validateMove(from, to));
     move(from, to);
 
     document.getElementById(from).classList.remove("marked");
@@ -156,14 +156,12 @@ function canMoveThrough(from, to, canJump) {
 
     // 1
     if (from.x === to.x) {
-        console.log("first")
         if (from.y > to.y) { low = to.y; high = from.y; } else { low = from.y; high = to.y; }
         for (let i = (low + 1); i < high; i++) {
             if (board[i][from.x].name !== "Free") { return false; }
         }
     }// 2
     if (from.y === to.y) {
-        console.log("Second")
         if (from.x > to.x) { low = (to.x + 1); high = from.x; } else { low = (from.x + 1); high = to.x; }
         for (let i = low; i < high; i++) {
             if (board[from.y][i].name !== "Free") { return false; }
@@ -176,7 +174,6 @@ function canMoveThrough(from, to, canJump) {
     if (yDif < 0) { yDif = yDif * -1; }
     //3
     if (xDif === yDif) {
-        console.log("third")
         let xAdd = 0;
         let yAdd = 0;
         for (let i = 1; i < xDif; i++) {
@@ -387,10 +384,10 @@ function combineCoordinates(from, to) {
 function passTurn() {
     if (turn === "white") {
         turn = "black";
-        document.getElementById("board").classList.add("blackTurn")
+        document.getElementById("board").classList.add("blackTurn");
     } else {
         turn = "white";
-        document.getElementById("board").classList.remove("blackTurn")
+        document.getElementById("board").classList.remove("blackTurn");
     }
 }
 
