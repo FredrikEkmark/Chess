@@ -154,13 +154,13 @@ function canMoveThrough(from, to, canJump) {
     let low;
     let high;
 
-    // 1
     if (from.x === to.x) {
         if (from.y > to.y) { low = to.y; high = from.y; } else { low = from.y; high = to.y; }
         for (let i = (low + 1); i < high; i++) {
             if (board[i][from.x].name !== "Free") { return false; }
         }
-    }// 2
+    }
+
     if (from.y === to.y) {
         if (from.x > to.x) { low = (to.x + 1); high = from.x; } else { low = (from.x + 1); high = to.x; }
         for (let i = low; i < high; i++) {
@@ -172,7 +172,7 @@ function canMoveThrough(from, to, canJump) {
 
     if (xDif < 0) { xDif = xDif * -1; }
     if (yDif < 0) { yDif = yDif * -1; }
-    //3
+
     if (xDif === yDif) {
         let xAdd = 0;
         let yAdd = 0;
