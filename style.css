@@ -1,0 +1,79 @@
+:root {
+    --black: #ad610b;
+    --white: #dbd091;
+    --blackMarked: #0c7975;
+    --whiteMarked: #25a29e;
+    --marked: #c33030;
+    --mainFont: "Lora", serif;
+    --secondaryFont: "Bodoni 72 Smallcaps";
+  }
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.board {
+    border: 20px;
+    border-color: white;
+    border-style: solid;
+    margin: 20px;
+    height: 40em;
+    width: 40em;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.blackTurn {
+    border-color: black;
+
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 5em;
+    width: 5em;
+
+}
+
+.piece {
+    margin: 0.5em;
+    position: absolute;
+    height: 4em;
+    width: 4em;
+
+}
+
+.black {
+    background-color: var(--black);
+
+}
+
+.white {
+    background-color: var(--white);
+
+}
+
+.marked {
+    background-color: var(--marked);
+
+}
+
+.validMoveBlack {
+    background-color: var(--blackMarked);
+
+}
+
+.validMoveWhite {
+    background-color: var(--whiteMarked);
+    
+}
