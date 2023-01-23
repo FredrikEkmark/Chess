@@ -21,9 +21,6 @@ const fr = { name: "Free", notation: "", color: "", img: "", move: "No Move" };
 // Declaring variables //
 
 const letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
-let coordinateLetter;
-let coordinateNumber;
-let htmlSquare;
 
 let turn = "white"
 
@@ -51,7 +48,7 @@ function updateBoard() {
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            htmlSquare = indexToId(i, j,)
+            let htmlSquare = indexToId(i, j,)
             document.getElementById(htmlSquare).innerHTML = board[i][j].img;
             showValidMove(htmlSquare);
         }
@@ -311,10 +308,8 @@ function kingMove(x, y) {
 // Utility functions //
 
 function indexToId(i, j,) {
-
-    coordinateLetter = letterArray[j];
-    coordinateNumber = (i + 1);
-    let id = coordinateLetter + coordinateNumber;
+    
+    let id = letterArray[j] + (i + 1);
 
     return id;
 }
