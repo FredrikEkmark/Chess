@@ -74,24 +74,28 @@ function choseSquare(clicked_id) {
     } else {
         let idIndex = idToIndex(clicked_id)
         if (board[idIndex[1]][idIndex[0]].color === turn) {
-        coordinate.from = clicked_id;
-        document.getElementById(clicked_id).classList.add("marked");
+            coordinate.from = clicked_id;
+            document.getElementById(clicked_id).classList.add("marked");
         }
     }
     updateBoard();
 }
 
 function declareMove(from, to) {
+    
+// remove the or true so to make it work //
+    if (validateMove(from, to) || true) {
 
-    console.log("Move from " + from + " to " + to);
-    console.log("Valid Move: " + validateMove(from, to));
-    move(from, to);
+        console.log("Valid Move: " + validateMove(from, to));
+        console.log("Move from " + from + " to " + to);
 
-    document.getElementById(from).classList.remove("marked");
-    coordinate.from = "";
+        move(from, to);
+        document.getElementById(from).classList.remove("marked");
+        coordinate.from = "";
+        passTurn();
+    } 
+
     coordinate.to = "";
-    passTurn();
-
 }
 
 function validateMove(from, to) {
@@ -115,7 +119,7 @@ function validateMove(from, to) {
 
     let pieceMove = true;
 
-   switch (board[fromIndexAr[1]][fromIndexAr[0]].name) {
+    switch (board[fromIndexAr[1]][fromIndexAr[0]].name) {
         case "King":
             pieceMove = kingMove(x, y);
             break;
@@ -304,6 +308,8 @@ function kingMove(x, y) {
     return false;
 }
 
+// Utility functions //
+
 function indexToId(i, j,) {
 
     coordinateLetter = letterArray[j];
@@ -330,16 +336,6 @@ function getSquareByID(id) {
 
     return board[indexList[1]][indexList[0]];
 
-}
-
-function showValidMove(id) {
-    if (coordinate.from === "") {
-        document.getElementById(id).classList.remove(applyColor(id));
-    } else {
-        if (validateMove(coordinate.from, id)) {
-            document.getElementById(id).classList.add(applyColor(id));
-        }
-    }
 }
 
 function applyColor(id) {
@@ -381,6 +377,8 @@ function combineCoordinates(from, to) {
 
 }
 
+// Rules fuctions
+
 function passTurn() {
     if (turn === "white") {
         turn = "black";
@@ -388,6 +386,16 @@ function passTurn() {
     } else {
         turn = "white";
         document.getElementById("board").classList.remove("blackTurn");
+    }
+}
+
+function showValidMove(id) {
+    if (coordinate.from === "") {
+        document.getElementById(id).classList.remove(applyColor(id));
+    } else {
+        if (validateMove(coordinate.from, id)) {
+            document.getElementById(id).classList.add(applyColor(id));
+        }
     }
 }
 
