@@ -2,29 +2,32 @@
 
 // Declaring the Pieces and Free space const variables //
 
-const pB = { name: "Pawn", notation: "P", color: "black", img: "<img class='piece' src='m/pB.svg'></img>", move: pawnMove(), startRow: 6 };
-const rB = { name: "Rook", notation: "R", color: "black", img: "<img class='piece' src='m/rB.svg'></img>", move: rookMove(), startRow: 7 };
-const nB = { name: "Knight", notation: "N", color: "black", img: "<img class='piece' src='m/nB.svg'></img>", move: knightMove(), startRow: 7 };
-const bB = { name: "Bishop", notation: "B", color: "black", img: "<img class='piece' src='m/bB.svg'></img>", move: bishopMove(), startRow: 7 };
-const qB = { name: "Queen", notation: "Q", color: "black", img: "<img class='piece' src='m/qB.svg'></img>", move: queenMove(), startRow: 7 };
-const kB = { name: "King", notation: "K", color: "black", img: "<img class='piece' src='m/kB.svg'></img>", move: kingMove(), startRow: 7 };
+const pB = { name: "Pawn", notation: "P", color: "black", img: "<img class='piece' src='m/pB.svg'></img" };
+const rB = { name: "Rook", notation: "R", color: "black", img: "<img class='piece' src='m/rB.svg'></img>" };
+const nB = { name: "Knight", notation: "N", color: "black", img: "<img class='piece' src='m/nB.svg'></img>" };
+const bB = { name: "Bishop", notation: "B", color: "black", img: "<img class='piece' src='m/bB.svg'></img>" };
+const qB = { name: "Queen", notation: "Q", color: "black", img: "<img class='piece' src='m/qB.svg'></img>" };
+const kB = { name: "King", notation: "K", color: "black", img: "<img class='piece' src='m/kB.svg'></img>" };
 
-const pW = { name: "Pawn", notation: "P", color: "white", img: "<img class='piece' src='m/pW.svg'></img>", move: pawnMove(), startRow: 1 };
-const rW = { name: "Rook", notation: "R", color: "white", img: "<img class='piece' src='m/rW.svg'></img>", move: rookMove(), startRow: 0 };
-const nW = { name: "Knight", notation: "K", color: "white", img: "<img class='piece' src='m/nW.svg'></img>", move: knightMove(), startRow: 0 };
-const bW = { name: "Bishop", notation: "B", color: "white", img: "<img class='piece' src='m/bW.svg'></img>", move: bishopMove(), startRow: 0 };
-const qW = { name: "Queen", notation: "Q", color: "white", img: "<img class='piece' src='m/qW.svg'></img>", move: queenMove(), startRow: 0 };
-const kW = { name: "King", notation: "K", color: "white", img: "<img class='piece' src='m/kW.svg'></img>", move: kingMove(), startRow: 0 };
+const pW = { name: "Pawn", notation: "P", color: "white", img: "<img class='piece' src='m/pW.svg'></img>" };
+const rW = { name: "Rook", notation: "R", color: "white", img: "<img class='piece' src='m/rW.svg'></img>" };
+const nW = { name: "Knight", notation: "K", color: "white", img: "<img class='piece' src='m/nW.svg'></img>" };
+const bW = { name: "Bishop", notation: "B", color: "white", img: "<img class='piece' src='m/bW.svg'></img>" };
+const qW = { name: "Queen", notation: "Q", color: "white", img: "<img class='piece' src='m/qW.svg'></img>" };
+const kW = { name: "King", notation: "K", color: "white", img: "<img class='piece' src='m/kW.svg'></img>" };
 
-const fr = { name: "Free", notation: "", color: "", img: "", move: "No Move" };
+const fr = { name: "Free", notation: "", color: "", img: "" };
 
 // Declaring variables //
 
 const letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
-let turn = "white"
+let turn = "white";
+let notTurn = "black";
 
-let coordinate = { from: "", to: "" }
+let helpView = true;
+
+let coordinate = { from: "", to: "" };
 
 // Declaring the boards and adding eventlisteners //
 
@@ -48,9 +51,11 @@ function updateBoard() {
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            let htmlSquare = indexToId(i, j,)
+            let htmlSquare = letterArray[j] + (i + 1);
             document.getElementById(htmlSquare).innerHTML = board[i][j].img;
-            showValidMove(htmlSquare);
+            if (helpView) {
+                showValidMove(htmlSquare);
+            }
         }
     }
 }
@@ -69,8 +74,7 @@ function choseSquare(clicked_id) {
             declareMove(coordinate.from, coordinate.to)
         }
     } else {
-        let idIndex = idToIndex(clicked_id)
-        if (board[idIndex[1]][idIndex[0]].color === turn) {
+        if (getSquareByID(clicked_id).color === turn) {
             coordinate.from = clicked_id;
             document.getElementById(clicked_id).classList.add("marked");
         }
@@ -78,21 +82,65 @@ function choseSquare(clicked_id) {
     updateBoard();
 }
 
-function declareMove(from, to) {
-    
-// remove the or true so to make it work //
-    if (validateMove(from, to) || true) {
+function declareMove() {
 
-        console.log("Valid Move: " + validateMove(from, to));
-        console.log("Move from " + from + " to " + to);
+    console.log("declareMove")
 
-        move(from, to);
-        document.getElementById(from).classList.remove("marked");
+    if (check(notTurn)) {
+        return;
+    }
+
+
+    if (!validateMove(coordinate.from, coordinate.to)) {
+        return;
+    }
+
+    if (check(turn)) {
+        console.log("Valid Move: " + validateMove(coordinate.from, coordinate.to));
+        console.log("Move from " + coordinate.from + " to " + coordinate.to);
+
+        move();
+        document.getElementById(coordinate.from).classList.remove("marked");
         coordinate.from = "";
         passTurn();
-    } 
+    }
 
     coordinate.to = "";
+
+}
+
+function check(color) {
+
+    return (turn === color);
+
+    let co = combineCoordinates(coordinate.from, coordinate.to)
+
+    let tempBoard = board;
+
+    let king = "";
+
+    tempBoard[co.to.y][co.to.x] = tempBoard[co.from.y][co.from.x];
+    tempBoard[co.from.y][co.from.x] = fr;
+
+    for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array.length; j++) {
+            if (tempBoard[i][j].name === "King" && tempBoard[i][j].color === color) {
+                king = (letterArray[j] + (i + 1))
+            }
+        }
+    }
+
+
+    for (let i = 0; i < array.length; i++) {
+        for (let j = 0; j < array.length; j++) {
+            if (validateMove(king, (letterArray[j] + (i + 1)))) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+
 }
 
 function validateMove(from, to) {
@@ -107,16 +155,13 @@ function validateMove(from, to) {
         return false;
     }
 
-    let fromIndexAr = idToIndex(from);
-    let toIndexAr = idToIndex(to);
+    let x = co.from.y - co.to.y;
 
-    let x = fromIndexAr[1] - toIndexAr[1];
-
-    let y = fromIndexAr[0] - toIndexAr[0];
+    let y = co.from.x - co.to.x;
 
     let pieceMove = true;
 
-    switch (board[fromIndexAr[1]][fromIndexAr[0]].name) {
+    switch (getSquareByID(from).name) {
         case "King":
             pieceMove = kingMove(x, y);
             break;
@@ -133,17 +178,18 @@ function validateMove(from, to) {
             pieceMove = rookMove(x, y);
             break;
         case "Pawn":
-            pieceMove = pawnMove(x, y, getSquareByID(from).color, getSquareByID(to).name !== "Free", fromIndexAr[1]);
+            pieceMove = pawnMove(x, y, getSquareByID(from).color, getSquareByID(to).name !== "Free", co.from.y);
             break;
         default:
             pieceMove = false;
     }
 
-    if (pieceMove) {
-        return canMoveThrough(co.from, co.to, (getSquareByID(from).name === "Knight"));
+    if (!pieceMove) {
+        return false;
     }
 
-    return false;
+
+    return canMoveThrough(co.from, co.to, (getSquareByID(from).name === "Knight"));;
 }
 
 function canMoveThrough(from, to, canJump) {
@@ -187,12 +233,13 @@ function canMoveThrough(from, to, canJump) {
 }
 
 
-function move(from, to) {
+function move() {
 
-    let co = combineCoordinates(from, to);
+    let co = combineCoordinates(coordinate.from, coordinate.to);
 
     board[co.to.y][co.to.x] = board[co.from.y][co.from.x];
     board[co.from.y][co.from.x] = fr;
+
 }
 
 
@@ -307,13 +354,6 @@ function kingMove(x, y) {
 
 // Utility functions //
 
-function indexToId(i, j,) {
-    
-    let id = letterArray[j] + (i + 1);
-
-    return id;
-}
-
 function idToIndex(id) {
 
     let indexList = Array.from(id);
@@ -368,7 +408,7 @@ function combineCoordinates(from, to) {
     toAr[0] = letterArray.indexOf(toAr[0]);
     toAr[1] = parseInt(toAr[1]) - 1;
 
-    return { from: { x: fromAr[0], y: fromAr[1] }, to: { x: toAr[0], y: toAr[1] } };
+    return { from: { id: from, x: fromAr[0], y: fromAr[1] }, to: { id: to, x: toAr[0], y: toAr[1] } };
 
 }
 
@@ -377,9 +417,11 @@ function combineCoordinates(from, to) {
 function passTurn() {
     if (turn === "white") {
         turn = "black";
+        notTurn = "white";
         document.getElementById("board").classList.add("blackTurn");
     } else {
         turn = "white";
+        notTurn = "black";
         document.getElementById("board").classList.remove("blackTurn");
     }
 }
