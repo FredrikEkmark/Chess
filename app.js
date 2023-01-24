@@ -31,7 +31,7 @@ let coordinate = { from: "", to: "" };
 
 // Declaring the boards and adding eventlisteners //
 
-let board = [
+let mainBoard = [
     //    A   B   C   D   E   F   G   H //
     /*1*/[rW, nW, bW, qW, kW, bW, nW, rW],
     /*2*/[pW, pW, pW, pW, pW, pW, pW, pW],
@@ -52,7 +52,7 @@ function updateBoard() {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             let htmlSquare = letterArray[j] + (i + 1);
-            document.getElementById(htmlSquare).innerHTML = board[i][j].img;
+            document.getElementById(htmlSquare).innerHTML = mainBoard[i][j].img;
             if (helpView) {
                 showValidMove(htmlSquare);
             }
@@ -74,7 +74,7 @@ function choseSquare(clicked_id) {
             declareMove(coordinate.from, coordinate.to)
         }
     } else {
-        if (getSquareByID(clicked_id).color === turn) {
+        if (getSquareByID(mainBoard, clicked_id).color === turn) {
             coordinate.from = clicked_id;
             document.getElementById(clicked_id).classList.add("marked");
         }
@@ -91,12 +91,12 @@ function declareMove() {
     }
 
 
-    if (!validateMove(coordinate.from, coordinate.to)) {
+    if (!validateMove(mainBoard, coordinate.from, coordinate.to)) {
         return;
     }
 
     if (check(turn)) {
-        console.log("Valid Move: " + validateMove(coordinate.from, coordinate.to));
+        console.log("Valid Move: " + validateMove(mainBoard, coordinate.from, coordinate.to));
         console.log("Move from " + coordinate.from + " to " + coordinate.to);
 
         move();
@@ -115,7 +115,7 @@ function check(color) {
 
     let co = combineCoordinates(coordinate.from, coordinate.to)
 
-    let tempBoard = board;
+    let tempBoard = mainBoard;
 
     let king = "";
 
@@ -133,7 +133,7 @@ function check(color) {
 
     for (let i = 0; i < array.length; i++) {
         for (let j = 0; j < array.length; j++) {
-            if (validateMove(king, (letterArray[j] + (i + 1)))) {
+            if (validateMove(tempBoard, king, (letterArray[j] + (i + 1)))) {
                 return true;
             }
         }
@@ -143,7 +143,7 @@ function check(color) {
 
 }
 
-function validateMove(from, to) {
+function validateMove(board, from, to) {
 
     let co = combineCoordinates(from, to)
 
@@ -151,7 +151,7 @@ function validateMove(from, to) {
         return false;
     }
 
-    if (getSquareByID(from).color === getSquareByID(to).color) {
+    if (getSquareByID(board, from).color === getSquareByID(board, to).color) {
         return false;
     }
 
@@ -161,7 +161,7 @@ function validateMove(from, to) {
 
     let pieceMove = true;
 
-    switch (getSquareByID(from).name) {
+    switch (getSquareByID(board, from).name) {
         case "King":
             pieceMove = kingMove(x, y);
             break;
@@ -178,7 +178,7 @@ function validateMove(from, to) {
             pieceMove = rookMove(x, y);
             break;
         case "Pawn":
-            pieceMove = pawnMove(x, y, getSquareByID(from).color, getSquareByID(to).name !== "Free", co.from.y);
+            pieceMove = pawnMove(x, y, getSquareByID(board, from).color, getSquareByID(board, to).name !== "Free", co.from.y);
             break;
         default:
             pieceMove = false;
@@ -189,10 +189,10 @@ function validateMove(from, to) {
     }
 
 
-    return canMoveThrough(co.from, co.to, (getSquareByID(from).name === "Knight"));;
+    return canMoveThrough(board, co.from, co.to, (getSquareByID(board, from).name === "Knight"));;
 }
 
-function canMoveThrough(from, to, canJump) {
+function canMoveThrough(board, from, to, canJump) {
 
     if (canJump) {
         return true;
@@ -237,8 +237,8 @@ function move() {
 
     let co = combineCoordinates(coordinate.from, coordinate.to);
 
-    board[co.to.y][co.to.x] = board[co.from.y][co.from.x];
-    board[co.from.y][co.from.x] = fr;
+    mainBoard[co.to.y][co.to.x] = mainBoard[co.from.y][co.from.x];
+    mainBoard[co.from.y][co.from.x] = fr;
 
 }
 
@@ -363,7 +363,7 @@ function idToIndex(id) {
     return indexList;
 }
 
-function getSquareByID(id) {
+function getSquareByID(board, id) {
 
     let indexList = Array.from(id);
     indexList[0] = letterArray.indexOf(indexList[0]);
@@ -430,7 +430,7 @@ function showValidMove(id) {
     if (coordinate.from === "") {
         document.getElementById(id).classList.remove(applyColor(id));
     } else {
-        if (validateMove(coordinate.from, id)) {
+        if (validateMove(mainBoard, coordinate.from, id)) {
             document.getElementById(id).classList.add(applyColor(id));
         }
     }
