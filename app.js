@@ -31,7 +31,7 @@ let coordinate = { from: "", to: "" };
 
 // Declaring the boards and adding eventlisteners //
 
-let mainBoard = [
+const mainBoard = [
     //    A   B   C   D   E   F   G   H //
     /*1*/[rW, nW, bW, qW, kW, bW, nW, rW],
     /*2*/[pW, pW, pW, pW, pW, pW, pW, pW],
@@ -48,6 +48,8 @@ let mainBoard = [
 // Update board funtion //
 
 function updateBoard() {
+
+    console.log("UpdateBoard")
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -71,7 +73,7 @@ function choseSquare(clicked_id) {
 
         } else {
             coordinate.to = clicked_id;
-            declareMove(coordinate.from, coordinate.to)
+            declareMove(coordinate.from, coordinate.to);
         }
     } else {
         if (getSquareByID(mainBoard, clicked_id).color === turn) {
@@ -84,24 +86,24 @@ function choseSquare(clicked_id) {
 
 function declareMove() {
 
-    console.log("declareMove")
+    console.log("declareMove");
 
-    if (check(notTurn)) {
-        return;
+    let validMove = validateMove(mainBoard, coordinate.from, coordinate.to);
+
+    console.log("Valid Move: " + validateMove(mainBoard, coordinate.from, coordinate.to));
+
+    if (validMove) {
+        validMove = !check(mainBoard, turn);
+        console.log(validMove);
     }
 
-
-    if (!validateMove(mainBoard, coordinate.from, coordinate.to)) {
-        return;
-    }
-
-    if (check(turn)) {
-        console.log("Valid Move: " + validateMove(mainBoard, coordinate.from, coordinate.to));
+    if (validMove) {
         console.log("Move from " + coordinate.from + " to " + coordinate.to);
 
         move();
         document.getElementById(coordinate.from).classList.remove("marked");
         coordinate.from = "";
+
         passTurn();
     }
 
@@ -109,31 +111,34 @@ function declareMove() {
 
 }
 
-function check(color) {
+function check(board, color) {
 
-    return (turn === color);
+    let co = combineCoordinates(coordinate.from, coordinate.to);
 
-    let co = combineCoordinates(coordinate.from, coordinate.to)
-
-    let tempBoard = mainBoard;
-
-    let king = "";
+    const tempBoard = JSON.parse(JSON.stringify(board));
 
     tempBoard[co.to.y][co.to.x] = tempBoard[co.from.y][co.from.x];
     tempBoard[co.from.y][co.from.x] = fr;
 
-    for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < array.length; j++) {
+    console.log(tempBoard);
+    console.log(mainBoard);
+
+    let king = "";
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
             if (tempBoard[i][j].name === "King" && tempBoard[i][j].color === color) {
                 king = (letterArray[j] + (i + 1))
             }
         }
     }
 
+    console.log("king is on " + king);
 
-    for (let i = 0; i < array.length; i++) {
-        for (let j = 0; j < array.length; j++) {
-            if (validateMove(tempBoard, king, (letterArray[j] + (i + 1)))) {
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            if (validateMove(tempBoard, (letterArray[j] + (i + 1)), king)) {
                 return true;
             }
         }
@@ -188,7 +193,6 @@ function validateMove(board, from, to) {
         return false;
     }
 
-
     return canMoveThrough(board, co.from, co.to, (getSquareByID(board, from).name === "Knight"));;
 }
 
@@ -234,6 +238,8 @@ function canMoveThrough(board, from, to, canJump) {
 
 
 function move() {
+
+    console.log("move excecuted")
 
     let co = combineCoordinates(coordinate.from, coordinate.to);
 
