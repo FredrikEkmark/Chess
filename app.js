@@ -57,6 +57,8 @@ function updateBoard() {
             document.getElementById(htmlSquare).innerHTML = mainBoard[i][j].img;
             if (helpView) {
                 showValidMove(htmlSquare);
+            } else {
+                document.getElementById(htmlSquare).classList.remove(applyColor(htmlSquare));
             }
         }
     }
@@ -440,6 +442,18 @@ function showValidMove(id) {
             document.getElementById(id).classList.add(applyColor(id));
         }
     }
+}
+
+function toogleHelp() {
+    if (helpView) {
+        console.log("Help view toogled off")
+        helpView = false;
+    } else {
+        console.log("Help view toogled on")
+        helpView = true;
+    }
+
+    updateBoard();
 }
 
 // RUN GAME // 
