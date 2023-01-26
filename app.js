@@ -447,9 +447,11 @@ function showValidMove(id) {
 function toogleHelp() {
     if (helpView) {
         console.log("Help view toogled off")
+        document.getElementById("tooglehelp").innerHTML = "Help View On";
         helpView = false;
     } else {
         console.log("Help view toogled on")
+        document.getElementById("tooglehelp").innerHTML = "Help View Off";
         helpView = true;
     }
 

@@ -56,6 +56,9 @@
 }
 
 .sideSettings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     height: 6em;
     width: 13em;
     background-color: var(--black);
@@ -87,6 +90,15 @@
     height: 5em;
     width: 5em;
 
+}
+
+.button {
+    border-radius: 0;
+    border: 00;
+    height: 3em;
+    width: 4.7em;
+    padding: 0.2em;
+    background-color: #897d70;
 }
 
 .piece {
