@@ -13,15 +13,59 @@
     padding: 0;
 }
 
+.chessGame {
+
+    display: flex;
+    flex-direction: row;
+    height: 44em;
+    width: 59em;
+    border: 1em;
+    border-color: var(--black);
+    border-style: solid;
+    background-color: var(--black);
+
+
+}
+
 .board {
-    border: 20px;
+    margin: 1em;
+    border: 1em;
     border-color: white;
     border-style: solid;
-    margin: 20px;
     height: 40em;
     width: 40em;
     display: flex;
     flex-direction: column;
+
+}
+
+.sideBoard {
+    margin: 1em;
+    height: 42em;
+    width: 15em;
+    background-color: var(--white);
+
+}
+
+.sideBlack {
+    height: 18em;
+    width: 13em;
+    background-color: var(--white);
+
+
+}
+
+.sideSettings {
+    height: 6em;
+    width: 13em;
+    background-color: var(--black);
+
+}
+
+.sideWhite {
+    height: 18em;
+    width: 13em;
+    background-color: var(--white);
 
 }
 
