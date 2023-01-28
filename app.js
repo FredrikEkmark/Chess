@@ -107,6 +107,12 @@ function declareMove() {
         console.log(validMove);
     }
 
+    if (check(mainBoard, notTurn(turn))) {
+        if (checkMate(mainBoard,notTurn(turn))) {
+            console.log("THERE IS A WINNER!");
+        }
+    }
+
     if (validMove) {
         console.log("Move from " + coordinate.from + " to " + coordinate.to);
 
@@ -157,6 +163,41 @@ function check(board, color) {
 
     return false;
 
+}
+
+function checkMate(board, turnColor) {
+
+    let co = combineCoordinates(coordinate.from, coordinate.to);
+
+    const tempBoard = JSON.parse(JSON.stringify(board));
+
+    tempBoard[co.to.y][co.to.x] = tempBoard[co.from.y][co.from.x];
+    tempBoard[co.from.y][co.from.x] = fr;
+
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            if (getSquareByID(board, (letterArray[j] + (i + 1))).color === turnColor) {
+
+                console.log("this square is " + turnColor)
+
+                for (let k = 0; k < 8; k++) {
+                    for (let l = 0; l < 8; l++) {
+                        let validMove = validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)))
+
+                        if (validMove) {
+                            validMove = !check(board, turnColor);
+                        }
+
+                        if (validMove) {
+                            console.log("Not checkmate");
+                            return false;
+                        }  
+                    }   
+                }
+            }
+        }
+    }
+    return true;
 }
 
 function validateMove(board, from, to) {
@@ -521,6 +562,8 @@ function remi() {
 
     }
 }
+
+
 
 // RUN GAME // 
 
