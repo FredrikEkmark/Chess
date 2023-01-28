@@ -7,7 +7,7 @@ const rB = { name: "Rook", notation: "R", color: "black", img: "<img class='piec
 const nB = { name: "Knight", notation: "N", color: "black", img: "<img class='piece' src='m/nB.svg' alt='Knight'></img>", taken: "<img class='sidepiece' src='m/nB.svg' alt='Knight'></img>" };
 const bB = { name: "Bishop", notation: "B", color: "black", img: "<img class='piece' src='m/bB.svg' alt='Bishop'></img>", taken: "<img class='sidepiece' src='m/bB.svg' alt='Bishop'></img>" };
 const qB = { name: "Queen", notation: "Q", color: "black", img: "<img class='piece' src='m/qB.svg' alt='Queen'></img>", taken: "<img class='sidepiece' src='m/qB.svg' alt='Queen'></img>" };
-const kB = { name: "King", notation: "K", color: "black", img: "<img class='piece' src='m/kB.svg' alt='King'></img>", taken: "<img class='sidepiece' src='m/kB.svg' alt='King'></img>"};
+const kB = { name: "King", notation: "K", color: "black", img: "<img class='piece' src='m/kB.svg' alt='King'></img>", taken: "<img class='sidepiece' src='m/kB.svg' alt='King'></img>" };
 
 const pW = { name: "Pawn", notation: "P", color: "white", img: "<img class='piece' src='m/pW.svg' alt='Pawn'></img>", taken: "<img class='sidepiece' src='m/pW.svg' alt='Pawn'></img>" };
 const rW = { name: "Rook", notation: "R", color: "white", img: "<img class='piece' src='m/rW.svg' alt='Rook'></img>", taken: "<img class='sidepiece' src='m/rW.svg' alt='Rook'></img>" };
@@ -108,8 +108,13 @@ function declareMove() {
     }
 
     if (check(mainBoard, notTurn(turn))) {
-        if (checkMate(mainBoard,notTurn(turn))) {
-            console.log("THERE IS A WINNER!");
+        if (checkMate(mainBoard, notTurn(turn))) {
+            declareWinner(turn);
+        } 
+    } else {
+        if (checkMate(mainBoard, notTurn(turn))) {
+            winner = "Draw"
+            declareWinner(turn);
         }
     }
 
@@ -191,8 +196,8 @@ function checkMate(board, turnColor) {
                         if (validMove) {
                             console.log("Not checkmate");
                             return false;
-                        }  
-                    }   
+                        }
+                    }
                 }
             }
         }
@@ -298,18 +303,25 @@ function move() {
 
 
     if (getSquareByID(mainBoard, co.to.id).name !== "Free") {
+        
         if (turn === "black") {
-            document.getElementById("sideblack").innerHTML += getSquareByID(mainBoard, co.to.id).taken;  
+            document.getElementById("sideblack").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
         } else if (turn === "white") {
-        document.getElementById("sidewhite").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
+            document.getElementById("sidewhite").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
         }
     }
-
-    
 
     mainBoard[co.to.y][co.to.x] = mainBoard[co.from.y][co.from.x];
     mainBoard[co.from.y][co.from.x] = fr;
 
+    if (pawnPromotion(mainBoard[co.to.y][co.to.x], co.to.y, turn)) {
+        if (turn === "white") {
+            mainBoard[co.to.y][co.to.x] = qW
+        }
+        else if (turn === "black") {
+            mainBoard[co.to.y][co.to.x] = qB
+        }
+    }
 }
 
 
@@ -422,6 +434,14 @@ function kingMove(x, y) {
     return false;
 }
 
+function pawnPromotion(piece, row) {
+
+    if ((row === 0 && piece.name == "Pawn") || (row === 7 && piece.name == "Pawn")) {
+       return true;
+    }
+    return false;
+}
+
 // Utility functions //
 
 function idToIndex(id) {
@@ -498,7 +518,7 @@ function notTurn(turn) {
     if (turn === "black") {
         return "white"
     } else if (turn === "white") {
-        return "white"
+        return "black"
     }
     return "";
 }
@@ -532,25 +552,15 @@ function toogleHelp() {
 function resign() {
 
     document.getElementById("resign").classList.add("markButton");
-
-    if (turn === "white") {
-        winner = "Black"
-        document.getElementById("winner").classList.add("winnerblack")
-    } else if (turn === "black") {
-        winner = "White"
-        document.getElementById("winner").classList.add("winnerwhite")
-    }
-    gameRunning = false;
-    document.getElementById("winner").innerHTML = winner + "<br>Win";
+    declareWinner(notTurn(turn));
 }
 
 function remi() {
 
     if (remiRequest.active && remiRequest.color != turn) {
-        gameRunning = false;
         winner = "Draw"
-        document.getElementById("winner").classList.add("winnerdraw")
-        document.getElementById("winner").innerHTML = winner;
+        declareWinner(turn);
+        
     } else if (remiRequest.active && remiRequest.color === turn) {
         remiRequest.active = false;
         remiRequest.color = "";
@@ -563,6 +573,25 @@ function remi() {
     }
 }
 
+function declareWinner(color) {
+
+    gameRunning = false;
+
+    if (winner === "Draw") {
+        document.getElementById("winner").classList.add("winnerdraw")
+        document.getElementById("winner").innerHTML = winner;
+    } else {
+        if (color === "black") {
+            winner = "Black"
+            document.getElementById("winner").classList.add("winnerblack")
+        } else if (color === "white") {
+            winner = "White"
+            document.getElementById("winner").classList.add("winnerwhite")
+        }  
+
+        document.getElementById("winner").innerHTML = winner + "<br>Win";
+    }
+}
 
 
 // RUN GAME // 
