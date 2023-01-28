@@ -107,14 +107,17 @@ function declareMove() {
         console.log(validMove);
     }
 
-    if (check(mainBoard, notTurn(turn))) {
-        if (checkMate(mainBoard, notTurn(turn))) {
-            declareWinner(turn);
-        } 
-    } else {
-        if (checkMate(mainBoard, notTurn(turn))) {
-            winner = "Draw"
-            declareWinner(turn);
+    if (validMove) {
+
+        if (check(mainBoard, notTurn(turn))) {
+            if (checkMate(mainBoard, notTurn(turn))) {
+                declareWinner(turn);
+            }
+        } else {
+            if (checkMate(mainBoard, notTurn(turn))) {
+                winner = "Draw"
+                declareWinner(turn);
+            }
         }
     }
 
@@ -188,9 +191,11 @@ function checkMate(board, turnColor) {
                 for (let k = 0; k < 8; k++) {
                     for (let l = 0; l < 8; l++) {
                         let validMove = validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)))
+                        console.log("validate move in checkmate is: " + validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1))));
 
                         if (validMove) {
-                            validMove = !check(board, turnColor);
+                            console.log("check if still in check")
+                            validMove = !check(board, notTurn(turnColor));
                         }
 
                         if (validMove) {
@@ -303,7 +308,7 @@ function move() {
 
 
     if (getSquareByID(mainBoard, co.to.id).name !== "Free") {
-        
+
         if (turn === "black") {
             document.getElementById("sideblack").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
         } else if (turn === "white") {
@@ -437,7 +442,7 @@ function kingMove(x, y) {
 function pawnPromotion(piece, row) {
 
     if ((row === 0 && piece.name == "Pawn") || (row === 7 && piece.name == "Pawn")) {
-       return true;
+        return true;
     }
     return false;
 }
@@ -560,7 +565,7 @@ function remi() {
     if (remiRequest.active && remiRequest.color != turn) {
         winner = "Draw"
         declareWinner(turn);
-        
+
     } else if (remiRequest.active && remiRequest.color === turn) {
         remiRequest.active = false;
         remiRequest.color = "";
@@ -587,7 +592,7 @@ function declareWinner(color) {
         } else if (color === "white") {
             winner = "White"
             document.getElementById("winner").classList.add("winnerwhite")
-        }  
+        }
 
         document.getElementById("winner").innerHTML = winner + "<br>Win";
     }
