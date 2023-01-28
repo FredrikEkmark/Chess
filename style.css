@@ -36,7 +36,24 @@
     width: 40em;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 
+}
+
+.piece {
+    margin: 0.5em;
+    position: absolute;
+    height: 4em;
+    width: 4em;
+
+}
+
+.sidepiece {
+    margin: 0.2em;
+    margin-top: 1em;
+    position: relative;
+    height: 2.8em;
+    width: 2.8em;
 }
 
 .sideBoard {
@@ -47,11 +64,10 @@
 
 }
 
-.sideBlack {
+.sideblack {
     height: 18em;
     width: 13em;
     background-color: var(--white);
-
 
 }
 
@@ -65,7 +81,7 @@
 
 }
 
-.sideWhite {
+.sidewhite {
     height: 18em;
     width: 13em;
     background-color: var(--white);
@@ -101,14 +117,6 @@
     background-color: #897d70;
 }
 
-.piece {
-    margin: 0.5em;
-    position: absolute;
-    height: 4em;
-    width: 4em;
-
-}
-
 .black {
     background-color: var(--black);
 
@@ -132,4 +140,31 @@
 .validMoveWhite {
     background-color: var(--whiteMarked);
     
+}
+
+#winner {
+    font-size: 6em;
+    position: absolute;
+    align-self: center;
+    text-align: center;
+}
+
+.winnerblack {
+    color: black;
+    filter: drop-shadow(0px 0px 5px gray);
+
+}
+
+.winnerwhite {
+    color: white;
+    filter: drop-shadow(0px 0px 5px black);
+    
+}
+
+.winnerdraw {
+    color: gray;
+}
+
+.markButton {
+    background-color: rgb(183, 27, 21);
 }

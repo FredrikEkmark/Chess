@@ -2,19 +2,19 @@
 
 // Declaring the Pieces and Free space const variables //
 
-const pB = { name: "Pawn", notation: "P", color: "black", img: "<img class='piece' src='m/pB.svg'></img" };
-const rB = { name: "Rook", notation: "R", color: "black", img: "<img class='piece' src='m/rB.svg'></img>" };
-const nB = { name: "Knight", notation: "N", color: "black", img: "<img class='piece' src='m/nB.svg'></img>" };
-const bB = { name: "Bishop", notation: "B", color: "black", img: "<img class='piece' src='m/bB.svg'></img>" };
-const qB = { name: "Queen", notation: "Q", color: "black", img: "<img class='piece' src='m/qB.svg'></img>" };
-const kB = { name: "King", notation: "K", color: "black", img: "<img class='piece' src='m/kB.svg'></img>" };
+const pB = { name: "Pawn", notation: "P", color: "black", img: "<img class='piece' src='m/pB.svg' alt='Pawn'></img>", taken: "<img class='sidepiece' src='m/pB.svg' alt='Pawn'></img>" };
+const rB = { name: "Rook", notation: "R", color: "black", img: "<img class='piece' src='m/rB.svg' alt='Rook'></img>", taken: "<img class='sidepiece' src='m/rB.svg' alt='Rook'></img>" };
+const nB = { name: "Knight", notation: "N", color: "black", img: "<img class='piece' src='m/nB.svg' alt='Knight'></img>", taken: "<img class='sidepiece' src='m/nB.svg' alt='Knight'></img>" };
+const bB = { name: "Bishop", notation: "B", color: "black", img: "<img class='piece' src='m/bB.svg' alt='Bishop'></img>", taken: "<img class='sidepiece' src='m/bB.svg' alt='Bishop'></img>" };
+const qB = { name: "Queen", notation: "Q", color: "black", img: "<img class='piece' src='m/qB.svg' alt='Queen'></img>", taken: "<img class='sidepiece' src='m/qB.svg' alt='Queen'></img>" };
+const kB = { name: "King", notation: "K", color: "black", img: "<img class='piece' src='m/kB.svg' alt='King'></img>", taken: "<img class='sidepiece' src='m/kB.svg' alt='King'></img>"};
 
-const pW = { name: "Pawn", notation: "P", color: "white", img: "<img class='piece' src='m/pW.svg'></img>" };
-const rW = { name: "Rook", notation: "R", color: "white", img: "<img class='piece' src='m/rW.svg'></img>" };
-const nW = { name: "Knight", notation: "K", color: "white", img: "<img class='piece' src='m/nW.svg'></img>" };
-const bW = { name: "Bishop", notation: "B", color: "white", img: "<img class='piece' src='m/bW.svg'></img>" };
-const qW = { name: "Queen", notation: "Q", color: "white", img: "<img class='piece' src='m/qW.svg'></img>" };
-const kW = { name: "King", notation: "K", color: "white", img: "<img class='piece' src='m/kW.svg'></img>" };
+const pW = { name: "Pawn", notation: "P", color: "white", img: "<img class='piece' src='m/pW.svg' alt='Pawn'></img>", taken: "<img class='sidepiece' src='m/pW.svg' alt='Pawn'></img>" };
+const rW = { name: "Rook", notation: "R", color: "white", img: "<img class='piece' src='m/rW.svg' alt='Rook'></img>", taken: "<img class='sidepiece' src='m/rW.svg' alt='Rook'></img>" };
+const nW = { name: "Knight", notation: "K", color: "white", img: "<img class='piece' src='m/nW.svg' alt='Knight'></img>", taken: "<img class='sidepiece' src='m/nW.svg' alt='Knight'></img>" };
+const bW = { name: "Bishop", notation: "B", color: "white", img: "<img class='piece' src='m/bW.svg' alt='Bishop'></img>", taken: "<img class='sidepiece' src='m/bW.svg' alt='Bishop'></img>" };
+const qW = { name: "Queen", notation: "Q", color: "white", img: "<img class='piece' src='m/qW.svg' alt='Queen'></img>", taken: "<img class='sidepiece' src='m/qW.svg' alt='Queen'></img>" };
+const kW = { name: "King", notation: "K", color: "white", img: "<img class='piece' src='m/kW.svg' alt='King'></img>", taken: "<img class='sidepiece' src='m/kW.svg' alt='King'></img>" };
 
 const fr = { name: "Free", notation: "", color: "", img: "" };
 
@@ -23,13 +23,18 @@ const fr = { name: "Free", notation: "", color: "", img: "" };
 const letterArray = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
 let turn = "white";
-let notTurn = "black";
 
 let helpView = true;
 
 let coordinate = { from: "", to: "" };
 
-// Declaring the boards and adding eventlisteners //
+let gameRunning = true;
+
+let winner = "";
+
+let remiRequest = { color: "", active: false };
+
+// Declaring the board//
 
 const mainBoard = [
     //    A   B   C   D   E   F   G   H //
@@ -67,23 +72,26 @@ function updateBoard() {
 // Move Funtions // 
 
 function choseSquare(clicked_id) {
-    console.log(clicked_id);
-    if (coordinate.from !== "") {
-        if (coordinate.from === clicked_id) {
-            coordinate.from = "";
-            document.getElementById(clicked_id).classList.remove("marked");
 
+    if (gameRunning) {
+        console.log(clicked_id);
+        if (coordinate.from !== "") {
+            if (coordinate.from === clicked_id) {
+                coordinate.from = "";
+                document.getElementById(clicked_id).classList.remove("marked");
+
+            } else {
+                coordinate.to = clicked_id;
+                declareMove(coordinate.from, coordinate.to);
+            }
         } else {
-            coordinate.to = clicked_id;
-            declareMove(coordinate.from, coordinate.to);
+            if (getSquareByID(mainBoard, clicked_id).color === turn) {
+                coordinate.from = clicked_id;
+                document.getElementById(clicked_id).classList.add("marked");
+            }
         }
-    } else {
-        if (getSquareByID(mainBoard, clicked_id).color === turn) {
-            coordinate.from = clicked_id;
-            document.getElementById(clicked_id).classList.add("marked");
-        }
+        updateBoard();
     }
-    updateBoard();
 }
 
 function declareMove() {
@@ -105,7 +113,11 @@ function declareMove() {
         move();
         document.getElementById(coordinate.from).classList.remove("marked");
         coordinate.from = "";
-
+        if (remiRequest.color != turn) {
+            remiRequest.color = "";
+            remiRequest.active = false;
+            document.getElementById("remi").classList.remove("markButton");
+        }
         passTurn();
     }
 
@@ -121,9 +133,6 @@ function check(board, color) {
 
     tempBoard[co.to.y][co.to.x] = tempBoard[co.from.y][co.from.x];
     tempBoard[co.from.y][co.from.x] = fr;
-
-    console.log(tempBoard);
-    console.log(mainBoard);
 
     let king = "";
 
@@ -244,6 +253,18 @@ function move() {
     console.log("move excecuted")
 
     let co = combineCoordinates(coordinate.from, coordinate.to);
+
+
+
+    if (getSquareByID(mainBoard, co.to.id).name !== "Free") {
+        if (turn === "black") {
+            document.getElementById("sideblack").innerHTML += getSquareByID(mainBoard, co.to.id).taken;  
+        } else if (turn === "white") {
+        document.getElementById("sidewhite").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
+        }
+    }
+
+    
 
     mainBoard[co.to.y][co.to.x] = mainBoard[co.from.y][co.from.x];
     mainBoard[co.from.y][co.from.x] = fr;
@@ -425,13 +446,20 @@ function combineCoordinates(from, to) {
 function passTurn() {
     if (turn === "white") {
         turn = "black";
-        notTurn = "white";
         document.getElementById("board").classList.add("blackTurn");
     } else {
         turn = "white";
-        notTurn = "black";
         document.getElementById("board").classList.remove("blackTurn");
     }
+}
+
+function notTurn(turn) {
+    if (turn === "black") {
+        return "white"
+    } else if (turn === "white") {
+        return "white"
+    }
+    return "";
 }
 
 function showValidMove(id) {
@@ -443,6 +471,8 @@ function showValidMove(id) {
         }
     }
 }
+
+// button functions //
 
 function toogleHelp() {
     if (helpView) {
@@ -456,6 +486,40 @@ function toogleHelp() {
     }
 
     updateBoard();
+}
+
+function resign() {
+
+    document.getElementById("resign").classList.add("markButton");
+
+    if (turn === "white") {
+        winner = "Black"
+        document.getElementById("winner").classList.add("winnerblack")
+    } else if (turn === "black") {
+        winner = "White"
+        document.getElementById("winner").classList.add("winnerwhite")
+    }
+    gameRunning = false;
+    document.getElementById("winner").innerHTML = winner + "<br>Win";
+}
+
+function remi() {
+
+    if (remiRequest.active && remiRequest.color != turn) {
+        gameRunning = false;
+        winner = "Draw"
+        document.getElementById("winner").classList.add("winnerdraw")
+        document.getElementById("winner").innerHTML = winner;
+    } else if (remiRequest.active && remiRequest.color === turn) {
+        remiRequest.active = false;
+        remiRequest.color = "";
+        document.getElementById("remi").classList.remove("markButton");
+    } else {
+        remiRequest.active = true;
+        remiRequest.color = turn;
+        document.getElementById("remi").classList.add("markButton");
+
+    }
 }
 
 // RUN GAME // 
