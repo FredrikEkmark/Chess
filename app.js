@@ -103,26 +103,22 @@ function declareMove() {
     console.log("Valid Move: " + validateMove(mainBoard, coordinate.from, coordinate.to));
 
     if (validMove) {
-        validMove = !check(mainBoard, turn);
+        validMove = !check(mainBoard, turn, coordinate.from, coordinate.to);
         console.log(validMove);
     }
 
     if (validMove) {
 
-        if (check(mainBoard, notTurn(turn))) {
+        if (check(mainBoard, notTurn(turn), coordinate.from, coordinate.to)) {
+
             if (checkMate(mainBoard, notTurn(turn))) {
-                declareWinner(turn);
-            }
-        } else {
-            if (checkMate(mainBoard, notTurn(turn))) {
-                winner = "Draw"
+
                 declareWinner(turn);
             }
         }
     }
 
     if (validMove) {
-        console.log("Move from " + coordinate.from + " to " + coordinate.to);
 
         move();
         document.getElementById(coordinate.from).classList.remove("marked");
@@ -139,9 +135,9 @@ function declareMove() {
 
 }
 
-function check(board, color) {
+function check(board, color, from, to) {
 
-    let co = combineCoordinates(coordinate.from, coordinate.to);
+    let co = combineCoordinates(from, to);
 
     const tempBoard = JSON.parse(JSON.stringify(board));
 
@@ -164,11 +160,12 @@ function check(board, color) {
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (validateMove(tempBoard, (letterArray[j] + (i + 1)), king)) {
+                console.log("is in check")
                 return true;
             }
         }
     }
-
+    console.log("is not in check")
     return false;
 
 }
@@ -186,7 +183,7 @@ function checkMate(board, turnColor) {
         for (let j = 0; j < 8; j++) {
             if (getSquareByID(board, (letterArray[j] + (i + 1))).color === turnColor) {
 
-                console.log("this square is " + turnColor)
+                console.log("this square is " + turnColor);
 
                 for (let k = 0; k < 8; k++) {
                     for (let l = 0; l < 8; l++) {
@@ -194,8 +191,9 @@ function checkMate(board, turnColor) {
                         console.log("validate move in checkmate is: " + validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1))));
 
                         if (validMove) {
-                            console.log("check if still in check")
-                            validMove = !check(board, notTurn(turnColor));
+                            console.log("check if still in check: from: " + (letterArray[j] + (i + 1)) + " to: " + (letterArray[l] + (k + 1)))
+                            validMove = check(board, notTurn(turnColor), (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)));
+                    
                         }
 
                         if (validMove) {
@@ -207,6 +205,7 @@ function checkMate(board, turnColor) {
             }
         }
     }
+    console.log("checkMate")
     return true;
 }
 
