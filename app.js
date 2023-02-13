@@ -54,8 +54,6 @@ const mainBoard = [
 
 function updateBoard() {
 
-    console.log("UpdateBoard")
-
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             let htmlSquare = letterArray[j] + (i + 1);
@@ -96,15 +94,11 @@ function choseSquare(clicked_id) {
 
 function declareMove() {
 
-    console.log("declareMove");
-
     let validMove = validateMove(mainBoard, coordinate.from, coordinate.to);
 
-    console.log("Valid Move: " + validateMove(mainBoard, coordinate.from, coordinate.to));
-
     if (validMove) {
+
         validMove = !check(mainBoard, turn, coordinate.from, coordinate.to);
-        console.log(validMove);
     }
 
     if (validMove) {
@@ -139,7 +133,7 @@ function check(board, color, from, to) {
 
     let co = combineCoordinates(from, to);
 
-    const tempBoard = JSON.parse(JSON.stringify(board));
+    let tempBoard = JSON.parse(JSON.stringify(board));
 
     tempBoard[co.to.y][co.to.x] = tempBoard[co.from.y][co.from.x];
     tempBoard[co.from.y][co.from.x] = fr;
@@ -148,64 +142,65 @@ function check(board, color, from, to) {
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
+
             if (tempBoard[i][j].name === "King" && tempBoard[i][j].color === color) {
+
                 king = (letterArray[j] + (i + 1))
+
+                console.log("king is: " + king)
             }
         }
     }
 
-    console.log("king is on " + king);
-
-
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
+
             if (validateMove(tempBoard, (letterArray[j] + (i + 1)), king)) {
-                console.log("is in check")
+
                 return true;
             }
         }
     }
-    console.log("is not in check")
-    return false;
 
+    return false;
 }
 
 function checkMate(board, turnColor) {
 
     let co = combineCoordinates(coordinate.from, coordinate.to);
 
-    const tempBoard = JSON.parse(JSON.stringify(board));
+    let tempBoard = JSON.parse(JSON.stringify(board));
 
     tempBoard[co.to.y][co.to.x] = tempBoard[co.from.y][co.from.x];
     tempBoard[co.from.y][co.from.x] = fr;
 
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
-            if (getSquareByID(board, (letterArray[j] + (i + 1))).color === turnColor) {
-
-                console.log("this square is " + turnColor);
+            if (getSquareByID(tempBoard, (letterArray[j] + (i + 1))).color === turnColor) {
 
                 for (let k = 0; k < 8; k++) {
                     for (let l = 0; l < 8; l++) {
-                        let validMove = validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)))
-                        console.log("validate move in checkmate is: " + validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1))));
+                        
+                        let validMove = validateMove(tempBoard, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)));
 
                         if (validMove) {
-                            console.log("check if still in check: from: " + (letterArray[j] + (i + 1)) + " to: " + (letterArray[l] + (k + 1)))
-                            validMove = check(board, notTurn(turnColor), (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)));
-                    
-                        }
 
+                            validMove = !check(tempBoard, turnColor, (letterArray[j] + (i + 1)), (letterArray[l] + (k + 1)));  
+
+                            console.log(turnColor + " from: " + (letterArray[j] + (i + 1)) + " to: " + (letterArray[l] + (k + 1)) + " validMove: " + validMove)
+                        
                         if (validMove) {
-                            console.log("Not checkmate");
+                            
                             return false;
                         }
+                        }
+                        
                     }
                 }
             }
         }
     }
-    console.log("checkMate")
+
     return true;
 }
 
@@ -300,17 +295,16 @@ function canMoveThrough(board, from, to, canJump) {
 
 function move() {
 
-    console.log("move excecuted")
-
     let co = combineCoordinates(coordinate.from, coordinate.to);
-
-
 
     if (getSquareByID(mainBoard, co.to.id).name !== "Free") {
 
         if (turn === "black") {
+
             document.getElementById("sideblack").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
+
         } else if (turn === "white") {
+
             document.getElementById("sidewhite").innerHTML += getSquareByID(mainBoard, co.to.id).taken;
         }
     }
@@ -541,11 +535,11 @@ function showValidMove(id) {
 
 function toogleHelp() {
     if (helpView) {
-        console.log("Help view toogled off")
+
         document.getElementById("tooglehelp").innerHTML = "Help View On";
         helpView = false;
     } else {
-        console.log("Help view toogled on")
+        
         document.getElementById("tooglehelp").innerHTML = "Help View Off";
         helpView = true;
     }
